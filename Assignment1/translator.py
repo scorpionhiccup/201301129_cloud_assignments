@@ -39,8 +39,6 @@ def convert(input_lines):
 			)
 			output_lines[-1] = output_lines[-1].replace("movl", "movq")
 			continue
-		#elif input_lines[index] == ""
-		#	continue
 
 		output_lines.append(reduce(lambda a, kv: a.replace(*kv), 
 			to_replace.iteritems(), input_lines[index])
@@ -52,7 +50,7 @@ def translate(argv):
 	optlist, args = getopt.getopt(argv, 'i:o:')
 
 	input_file = "32_bit.asm"
-	output_file = "64_bit2.asm"
+	output_file = "64_bit.asm"
 	
 	for o, a in optlist:
 		if o == "-i":
