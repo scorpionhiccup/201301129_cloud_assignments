@@ -15,5 +15,7 @@ Default Input C Program File: **./prog.c**
 
 To run the Translator:
 python translator.py [-i path_to_input_file] [-o path_to_output_file] 
+
 Default Input 32 Bit Assembly File: **./32_bit.asm**
+
 Default Output 32 Bit Assembly File: **./64_bit.asm**
