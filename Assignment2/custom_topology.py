@@ -22,7 +22,6 @@ class CustomTopology():
         odd_ip='11.0.0.'
         even_ip='11.0.1.'
 
-        #info(' --> Inside Build <--')
         #Add All Hosts
         count, count2 = 1, 1
         for host_count in range(self.no_hosts*self.no_switches):

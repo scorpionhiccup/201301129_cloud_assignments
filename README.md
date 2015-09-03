@@ -23,7 +23,11 @@ Default Output 32 Bit Assembly File: **./64_bit.asm**
 
 
 ## Assignment - II:
+
 To run the mininet assignment,
+
 1. Go to the Assignment - 2 folder.
-2. Run the command 
+
+2. Run the command ,
+
 > sudo python topology.py
