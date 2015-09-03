@@ -14,8 +14,16 @@ To compile to get the 64 bit Assembly Language Code:
 Default Input C Program File: **./prog.c**
 
 To run the Translator:
-python translator.py [-i path_to_input_file] [-o path_to_output_file] 
+1. Go to the Assignment - 2 folder.
+2. python translator.py [-i path_to_input_file] [-o path_to_output_file] 
 
 Default Input 32 Bit Assembly File: **./32_bit.asm**
 
 Default Output 32 Bit Assembly File: **./64_bit.asm**
+
+
+## Assignment - II:
+To run the mininet assignment,
+1. Go to the Assignment - 2 folder.
+2. Run the command 
+> sudo python topology.py

@@ -23,6 +23,7 @@ class CustomTopology():
         even_ip='11.0.1.'
 
         #info(' --> Inside Build <--')
+        #Add All Hosts
         count, count2 = 1, 1
         for host_count in range(self.no_hosts*self.no_switches):
             if host_count%2:
@@ -33,6 +34,7 @@ class CustomTopology():
                 count2+=1
             #count+=1
 
+        #Add All Switches
         for switch_count in range(self.no_hosts):
             switches.append(self.mininet_obj.addSwitch('s%s' % (switch_count+1)))
 
@@ -40,7 +42,6 @@ class CustomTopology():
             for host_no in range(self.no_hosts):
                 self.mininet_obj.addLink( hosts[self.no_hosts*switch_no+host_no], switches[switch_no], bw=2-host_no%2)
 
-        print switches
         #Connect the Switches in a ring-like topology.
         for switch_no in range(self.no_hosts-1):
             print switch_no
