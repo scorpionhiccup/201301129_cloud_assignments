@@ -1,53 +1,69 @@
 #!/usr/bin/python
-
-from mininet.topo import Topo
 from mininet.net import Mininet
-from mininet.util import dumpNodeConnections
+from mininet.util import dumpNodeConnections, irange
 from mininet.log import setLogLevel
 from mininet.cli import CLI
-from mininet.node import RemoteController, Controller, OVSSwitch
+from mininet.link import TCLink
+from mininet.node import Controller, CPULimitedHost
 
-class CustomTopo(Topo):
+class CustomTopology():
     '''Custom Topology'''
-    def build(self, no_switches=3):
+    def __init__(self, no_hosts ,no_switches):
+        self.no_hosts = no_hosts
+        self.no_switches = no_switches
+        self.mininet_obj = Mininet(controller=Controller, link=TCLink)
+
+    def build(self):
+        self.mininet_obj.addController( 'c0' )
         switches = []
-        for switch_count in range(1, no_switches+1):
-            switches.append(self.addSwitch('S' + str(switch_count)))
+        hosts = []
+
+        #self.addController( 'c0' )
+        odd_ip='11.0.0.'
+        even_ip='11.0.1.'
+
+        #info(' --> Inside Build <--')
+        count, count2 = 1, 1
+        for host_count in range(self.no_hosts*self.no_switches):
+            if host_count%2:
+                hosts.append(self.mininet_obj.addHost('h%s' % (host_count+1), ip=odd_ip + str(count) + '/24'))
+                count+=1
+            else:
+                hosts.append(self.mininet_obj.addHost('h%s' % (host_count+1), ip=even_ip + str(count2)+ '/24'))
+                count2+=1
+            #count+=1
+
+        for switch_count in range(self.no_hosts):
+            switches.append(self.mininet_obj.addSwitch('s%s' % (switch_count+1)))
+
+        for switch_no in range(self.no_switches):
+            for host_no in range(self.no_hosts):
+                self.mininet_obj.addLink( hosts[self.no_hosts*switch_no+host_no], switches[switch_no], bw=2-host_no%2)
+
+        print switches
+        #Connect the Switches in a ring-like topology.
+        for switch_no in range(self.no_hosts-1):
+            print switch_no
+            self.mininet_obj.addLink(switches[switch_no], switches[switch_no+1], bw=2) 
+
+    def run(self):
+        self.mininet_obj.start()
+        print "Dumping host connections"
+        dumpNodeConnections(self.mininet_obj.hosts)
+        print "Testing network connectivity"
+        self.mininet_obj.pingAll()
+        CLI( self.mininet_obj )
+        self.mininet_obj.stop()
+
             
-            host = self.addHost('H%s' % (2*switch_count))
-            self.addLink(host, switches[switch_count-1])            
-            host = self.addHost('H%s' % (2*switch_count - 1))
-            self.addLink(host, switches[switch_count-1])
-        
-
-        for i in range(no_switches-1):
-            for j in range(i+1, no_switches):
-                self.addLink(switches[i], switches[j])                
-                #self.addLink(switches[j], switches[i])
-
-        '''
-        for switch_count in range(no_switches):
-            for j in range(switch_count+1, no_switches):
-                print j
-            print switch_count, j
-        '''
-            
-
 def main():
-    #no_hosts = raw_input("No. of hosts: ")
+    no_hosts = int(raw_input("No. of hosts: "))
     no_switches = int(raw_input("No. of switches: "))
-    #topo = CustomTopo(no_hosts, no_switches)
-    topo = CustomTopo(no_switches)
-    net = Mininet(topo, switch=OVSSwitch )
-    net.start()    
-    print "Dumping host connections"
-    dumpNodeConnections(net.hosts)
-    print "Testing network connectivity"
-    net.pingAll()
-    #CLI( net )
-    net.stop()
+    topo_obj = CustomTopology(no_hosts, no_switches)
+    topo_obj.build()
+    topo_obj.run()
 
 if __name__ == '__main__':
     # Tell mininet to print useful information
-    setLogLevel('info')
+    setLogLevel( 'info' )
     main()
